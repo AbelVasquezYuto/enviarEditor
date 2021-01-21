@@ -1,0 +1,39 @@
+/*
+.zui-table {
+    border: none;
+    border-right: solid 1px #DDEFEF;
+    border-collapse: separate;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+}
+
+.zui-wrapper {
+    position: relative;
+}
+
+
+
+th,
+td {
+  border: 1px solid black;
+  text-align: left;
+  padding: 12px;
+  box-sizing: border-box;
+}*/
+
+
+td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+
+
+.fixed {
+    position: absolute;
+    left: 0;
+    background: #aaa;
+}
+

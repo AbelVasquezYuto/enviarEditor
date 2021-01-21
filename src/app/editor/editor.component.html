@@ -1,0 +1,12 @@
+<div class="row">
+    <div class="col-6">
+        <angular-editor class="te-basic-tools" [(ngModel)]="htmlContent" [config]="config"></angular-editor>
+        <button (click)="enviar()">ENVIAR</button>
+    </div>
+    <div class="col-6">
+        <quill-editor [styles]="editorStyle" placeholder="Enter Text" [(ngModel)]="htmlContent2"
+            (onEditorChanged)="changedEditor($event)">
+        </quill-editor>
+        <button (click)="enviarQuill()">ENVIAR</button>
+    </div>
+</div>

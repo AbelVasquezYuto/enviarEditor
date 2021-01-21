@@ -1,0 +1,276 @@
+<div class="p-2">
+  <br />
+  <div class="btn-toolbar justify-content-between mb-1" role="toolbar">
+		<div class="input-group mb-2" role="toolbar">
+				<div class="input-group-text border-0 font-weight-bolder text-uppercase pl-0 mr-2" style="background-color: transparent;">{{titulo}}</div>
+			<div class="input-group-prepend">
+				<div class="input-group-text">Doc. Identidad</div>
+			</div>
+			<input [disabled] = "eventoNuevo" class="form-control mr-2 text-uppercase" type="text"
+				name="DocumentoIdentidadFiltro" id="DocumentoIdentidadFiltro" maxlength="20"
+			  (keyup)="filtrar($event, 1)" />
+			<div class="input-group-prepend">
+				<div class="input-group-text">Apellidos y nombres</div>
+			</div>
+			<input [disabled] = "eventoNuevo" class="form-control text-uppercase" type="text"
+				name="NombreCompletoFiltro" id="NombreCompletoFiltro" maxlength="50"
+				(keyup)="filtrar($event, 2)" />
+		</div>
+		<div class="btn-toolbar" role="toolbar">
+			<button [disabled] = "eventoNuevo" type="button" class="btn btn-secondary border mr-1" style="height: 35px;"
+				(click)="nuevo()">Nuevo</button>
+      <button [disabled] = "!eventoModificar" type="button" id="btnNuevo" class="btn btn-secondary border mr-1" style="height: 35px;"
+				(click)="modificar()">Modificar</button>
+			<button [disabled] = "!eventoNuevo" type="button" id="btnCancelar" class="btn btn-secondary border mr-1" style="height: 35px;"
+				(click)="cancelar()">Cancelar</button>
+			<button [disabled] = "!eventoNuevo" type="button" id="btnGuardar" class="btn btn-secondary border mr-1" style="height: 35px;"
+				(click)="guardar()">Guardar</button>
+		</div>
+	</div>
+  <div style="height: 200px;">
+    <table class="table table-bordered table-hover table-sm">
+      <thead id="thead" class="bg-red-tevo text-white">
+        <tr style="user-select: none;">
+          <th class="align-middle text-center" style="width:3%;">NRO</th>
+          <th class="align-middle text-center" style="width:5%;" (click)="ordenar('tipoDocumentoIdentidad.nombre')">TIP. DI</th>
+          <th class="align-middle text-center" style="width:8%;" (click)="ordenar('nroDocumentoIdentidad')">DOC IDEN</th>
+          <th class="align-middle text-center" style="width:12%;" (click)="ordenar('apellidoPaterno')">AP. PATERNO</th>
+          <th class="align-middle text-center" style="width:12%;" (click)="ordenar('apellidoMaterno')">AP. MATERNO</th>
+          <th class="align-middle text-center" style="width:12%;" (click)="ordenar('nombre')">NOMBRE</th>
+          <th class="align-middle text-center" style="width:10%;" (click)="ordenar('local.nombre')">LOCAL</th>
+          <th class="align-middle text-center" style="width:10%;" (click)="ordenar('cargo.abreviatura')">CARGO</th>
+          <th class="align-middle text-center" style="width:10%;" (click)="ordenar('centroCosto.abreviatura')">CENTRO COSTO</th>
+          <th class="align-middle text-center" style="width:8%;" (click)="ordenar('fechaInicioTrabajo')">F.INI</th>
+          <th class="align-middle text-center" (click)="ordenar('estado.nombre')">ESTADO</th>
+        </tr>
+      </thead>
+      <tbody id="tbody" style="cursor: default;">
+        <tr *ngFor="let empleado of empleados; let i = index" class="text-uppercase"
+            [ngClass]="{'table-active': i===editable}" (click)="mostrarEmpleado(empleado, i)">
+          <td>{{empleado.nro}}</td>
+          <td>{{empleado.tipoDocumentoIdentidad.nombre}}</td>
+          <td>{{empleado.nroDocumentoIdentidad}}</td>
+          <td>{{empleado.apellidoPaterno}}</td>
+          <td>{{empleado.apellidoMaterno}}</td>
+          <td>{{empleado.nombre}}</td>
+          <td>{{empleado.local.nombre}}</td>
+          <td>{{empleado.cargo.abreviatura}}</td>
+          <td>{{empleado.centroCosto.abreviatura}}</td>
+          <td>{{empleado.fechaInicioTrabajo}}</td>
+          <td>{{empleado.estado.nombre}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div [ngStyle]="{'pointer-events': eventoNuevo?'none':'auto'}">
+    <paginator-nav *ngIf="paginador" [paginador] = "paginador" [enlacePaginador]="rutaPaginador"></paginator-nav>
+  </div>
+  <div [ngStyle]="{'pointer-events': !eventoNuevo?'none':'auto'}">
+    <div class="bg-gray-tevo p-2 mt-0">
+      <div class="form-group row mb-0">
+        <div class="col-sm-5">
+          <div class="form-group row mb-0">
+            <label class="col-sm-2 col-form-label" for="tipoDocumentoIdentidadForm">Tipo DI</label>
+            <div class="col-sm-3">
+              <select [compareWith]="compararAux"
+                  class="form-control bg-secondary pt-1"
+                  [(ngModel)]="empleadoSeleccionado.tipoDocumentoIdentidad" id="tipoDocumentoIdentidadForm" style="height: 28px;">
+                <option [ngValue]="undefined">----</option>
+                <option *ngFor="let aux of tiposDI" [ngValue]="aux">{{ aux.abreviatura }}</option>
+              </select>
+            </div>
+            <div class="col-sm-1"></div>
+            <label class="col-sm-2 col-form-label" for="nroDocumentoIdentidadForm">Nro DI</label>
+            <div class="col-sm">
+              <input type="text" class="form-control text-uppercase"
+                [(ngModel)]="empleadoSeleccionado.nroDocumentoIdentidad" id="nroDocumentoIdentidadForm" style="height: 28px;" maxlength="20"/>
+            </div>
+          </div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="apellidoPaternoForm">Ap Paterno</label>
+						<div class="col-sm">
+							<input type="text" class="form-control text-uppercase"
+                [(ngModel)]="empleadoSeleccionado.apellidoPaterno" id="apellidoPaternoForm" style="height: 28px;">
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="apellidoMaternoForm">Ap Materno</label>
+						<div class="col-sm">
+							<input type="text" class="form-control text-uppercase"
+                [(ngModel)]="empleadoSeleccionado.apellidoMaterno" id="apellidoMaternoForm" style="height: 28px;">
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="nombreForm">Nombre</label>
+						<div class="col-sm">
+							<input type="text" class="form-control text-uppercase"
+                [(ngModel)]="empleadoSeleccionado.nombre" id="nombreForm" style="height: 28px;">
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+            <label class="col-sm-2 col-form-label" for="sexoForm">Sexo</label>
+            <div class="col-sm-3">
+              <select [compareWith]="compararAux"
+                  class="form-control bg-secondary pt-1"
+                  [(ngModel)]="empleadoSeleccionado.sexo" id="sexoForm" style="height: 28px;">
+                <option [ngValue]="undefined">----</option>
+                <option *ngFor="let aux of sexos" [ngValue]="aux">{{ aux.abreviatura }}</option>
+              </select>
+            </div>
+            <div class="col-sm-1"></div>
+						<label class="col-sm-2 col-form-label" for="estadoCivilForm">Estado Civil</label>
+            <div class="col-sm">
+              <select [compareWith]="compararAux"
+                  class="form-control bg-secondary pt-1"
+                  [(ngModel)]="empleadoSeleccionado.estadoCivil" id="estadoCivilForm" style="height: 28px;">
+                <option [ngValue]="undefined">----</option>
+                <option *ngFor="let aux of estadosCiviles" [ngValue]="aux">{{ aux.nombre }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="fechaNacimientoForm">Fec Nac</label>
+						<div class="col-sm">
+							<input type="date" class="form-control"
+                [(ngModel)]="empleadoSeleccionado.fechaNacimiento" id="fechaNacimientoForm" style="height: 28px;">
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+            <label class="col-sm-2 col-form-label" for="direccionForm">Direccion</label>
+            <div class="col-sm">
+              <textarea rows="2" class="form-control text-uppercase"
+                [(ngModel)]="empleadoSeleccionado.direccionActual" id="direccionForm" style="resize: none;"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-5">
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="telefono1Form">Telefonos</label>
+						<div class="col-sm">
+							<input type="text" class="form-control text-uppercase"
+                [(ngModel)]="empleadoSeleccionado.telefono1" id="telefono1Form" style="height: 28px;">
+						</div>
+            <div class="col-sm">
+							<input type="text" class="form-control text-uppercase"
+                [(ngModel)]="empleadoSeleccionado.telefono2" id="telefono2Form" style="height: 28px;">
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="correoForm">Correo</label>
+						<div class="col-sm">
+							<input type="text" class="form-control text-uppercase"
+                [(ngModel)]="empleadoSeleccionado.correo" id="correoForm" style="height: 28px;">
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="cargoForm">Cargo</label>
+						<div class="col-sm">
+              <input type="text" id="cargoForm"
+                  aria-label="cargos"
+                  matInput
+                  [formControl]="autocompleteCargoControl"
+                  [matAutocomplete]="autoCargo"
+                  [(ngModel)]="empleadoSeleccionado.cargo"
+                  class="form-control text-uppercase" style="height: 28px;">
+              <mat-autocomplete #autoCargo="matAutocomplete" [displayWith]="mostrarNombreCargo">
+                <mat-option style="height: 30px;font-size: 0.75rem" *ngFor="let cargo of cargosFiltrados | async" [value]="cargo">
+                  {{cargo.descripcion}}
+                </mat-option>
+              </mat-autocomplete>
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="centroCostoForm">C. Costo</label>
+						<div class="col-sm">
+              <input type="text" id="centroCostoForm"
+                  aria-label="centrosCosto"
+                  matInput
+                  [formControl]="autocompleteCCControl"
+                  [matAutocomplete]="autoCC"
+                  [(ngModel)]="empleadoSeleccionado.centroCosto"
+                  class="form-control text-uppercase" style="height: 28px;">
+              <mat-autocomplete #autoCC="matAutocomplete" [displayWith]="mostrarNombreCC">
+                <mat-option style="height: 30px;font-size: 0.75rem" *ngFor="let cc of centrosCostoFiltrados | async" [value]="cc">
+                  {{cc.descripcion}}
+                </mat-option>
+              </mat-autocomplete>
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="localForm">Local</label>
+						<div class="col-sm">
+              <input type="text" id="localForm"
+                  aria-label="locales"
+                  matInput
+                  [formControl]="autocompleteLocalControl"
+                  [matAutocomplete]="autoLocal"
+                  [(ngModel)]="empleadoSeleccionado.local"
+                  class="form-control text-uppercase" style="height: 28px;">
+              <mat-autocomplete #autoLocal="matAutocomplete" [displayWith]="mostrarNombreLocal">
+                <mat-option style="height: 30px;font-size: 0.75rem" *ngFor="let local of localesFiltrados | async" [value]="local">
+                  {{local.nombre}}
+                </mat-option>
+              </mat-autocomplete>
+						</div>
+					</div>
+          <div class="form-group row mb-0">
+						<label class="col-sm-2 col-form-label" for="fechaInicioTrabajoForm">Fec Trabajo</label>
+            <div class="row col-sm">
+              <div class="col-sm-6">
+  							<input type="date" class="form-control"
+                  [(ngModel)]="empleadoSeleccionado.fechaInicioTrabajo" id="fechaInicioTrabajoForm" style="height: 28px;">
+  						</div>
+              <div class="col-sm-6">
+  							<input type="date" class="form-control"
+                  [(ngModel)]="empleadoSeleccionado.fechaFinTrabajo" id="fechaFinTrabajoForm" style="height: 28px;">
+  						</div>
+            </div>
+          </div>
+          <div class="form-group row mb-0">
+            <label class="col-sm-2 col-form-label" for="tipoContratoForm">Contrato</label>
+            <div class="col-sm-5">
+              <select [compareWith]="compararAux"
+                  class="form-control bg-secondary pt-1"
+                  [(ngModel)]="empleadoSeleccionado.tipoContrato" id="tipoContratoForm" style="height: 28px;">
+                <option [ngValue]="undefined">----</option>
+                <option *ngFor="let aux of contratos" [ngValue]="aux">{{ aux.nombre }}</option>
+              </select>
+            </div>
+						<label class="col-sm-1 col-form-label" for="estadoForm">Estado</label>
+            <div class="col-sm">
+              <select [compareWith]="compararAux"
+                  class="form-control bg-secondary pt-1"
+                  [(ngModel)]="empleadoSeleccionado.estado" id="estadoForm" style="height: 28px;">
+                <option [ngValue]="undefined">----</option>
+                <option *ngFor="let aux of estados" [ngValue]="aux">{{ aux.nombre }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm">
+          <div class="form-group row mb-1">
+						<label class="col-sm-2 col-form-label" for="fotoForm">Foto</label>
+            <div class="col-sm">
+              <img *ngIf="!imagenVistaPrevia" src="assets/images/notUser.png" class="border bg-secondary" height="185" width="100%"/>
+              <img *ngIf="imagenVistaPrevia" id="fotoForm" [src]="imagenVistaPrevia" class="border bg-secondary" height="185" width="100%"/>
+            </div>
+          </div>
+          <div class="form-group row mb-0">
+            <div class="col-sm-2">
+              <input id="fotoRuta" type="file" accept="image/*" name="file" style="display: none;" (change)="cargarFoto($event)"/>
+            </div>
+            <div class="col-sm">
+							<button type="button" class="btn btn-secondary mb-1" onclick="document.getElementById('fotoRuta').click();">
+								<img src="assets/images/search.png">
+							</button>
+              <span>&nbsp;</span>
+							<button type="button" class="btn btn-secondary mb-1" (click)="quitarFoto()">
+								<img src="assets/images/delete.png">
+							</button>
+						</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

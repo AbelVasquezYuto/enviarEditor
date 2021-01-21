@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>VER CORREO</h2>
+<mat-dialog-content class="mat-typography">
+
+    <div class="col">
+        <label for="" style="font-weight: bold;" class="mr-2">Foto</label>
+        <label onclick="document.getElementById('fotoRuta').click();" for="" class="mr-2"><img
+                 alt="" />ABRIR</label>
+        <input id="fotoRuta" type="file" name="file" style="display: none;" (change)="cargarFoto($event)" />
+        <label for="">{{fotoMostrar}}</label>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

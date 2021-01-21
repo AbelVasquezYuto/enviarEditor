@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">{{ title }}</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown show mx-1">
+        <a class="nav-link" href="#"
+						role="button" id="dropdownMaestros" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">MAESTROS</a>
+
+        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dropdownMenuLink" routerLinkActive="active">
+          <a class="dropdown-item" routerLink="/login">Local</a>
+          <a class="dropdown-item" routerLink="/login">Area</a>
+          <a class="dropdown-item" routerLink="/centro_costo">Centro de Costo</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" routerLink="/empleado">Empleado</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown show mx-1">
+        <a class="nav-link" href="#"
+						role="button" id="dropdownMaestros" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">OPERACIONES</a>
+
+        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dropdownOperaciones">
+          <a class="dropdown-item" routerLink="/login">Ticket de Solicitud</a>
+          <a class="dropdown-item" routerLink="/login">Orden de Compra</a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav navbar-right">
+      <li *ngIf="!_authService.isAuthenticated()"><a [routerLink]="['/login']" class="btn btn-outline-primary">Sign In</a></li>
+      <li *ngIf="_authService.isAuthenticated()" class="dropdown">
+        <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{ _authService.usuario.username }}
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <button (click)="logout()" class="dropdown-item" type="submit">Sign Out</button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
